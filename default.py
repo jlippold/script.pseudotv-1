@@ -20,6 +20,7 @@ import xbmc
 import xbmcgui
 import xbmcaddon
 import sys
+import urlparse
 import os
 
 ADDON = xbmcaddon.Addon()
@@ -28,6 +29,15 @@ CWD = ADDON.getAddonInfo('path').decode("utf-8")
 RESOURCE = xbmc.translatePath(os.path.join(CWD, 'resources', 'lib').encode("utf-8")).decode("utf-8")
 
 sys.path.append(RESOURCE)
+if len(sys.argv) > 1:
+    base_url = sys.argv[0]
+    args = sys.argv[1]
+    parsedArgs = urlparse.parse_qs(args)
+    if parsedArgs["channel"]:
+        try:
+            ADDON.setSetting('CurrentChannel', parsedArgs["channel"][0])
+        except: 
+            xbmc.log("Error setting default channel",level=xbmc.LOGDEBUG)
 
 SkinID = xbmc.getSkinDir()
 if SkinID != 'skin.estuary':
